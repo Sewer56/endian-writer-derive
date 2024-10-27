@@ -1,5 +1,4 @@
-// endian-writer-derive/src/lib.rs
-
+#![doc = include_str!("../README.MD")]
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, Data, DeriveInput, Fields};
@@ -16,7 +15,6 @@ use syn::{parse_macro_input, Data, DeriveInput, Fields};
 /// # Example
 ///
 /// ```rust
-/// use endian_writer::{EndianWriter, EndianReadableAt, HasSize};
 /// use endian_writer_derive::EndianWritable;
 ///
 /// #[derive(EndianWritable)]
