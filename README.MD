@@ -6,7 +6,7 @@
 
 ## About
 
-Procedural Macros for [endian-writer] crate.
+Procedural Macros for [endian-writer] crate (version 2.X.X).
 
 This is a procedural macro for automatically deriving [EndianWritableAt], [EndianReadableAt],
 and [HasSize] traits for structs whose members already implement the above traits.
