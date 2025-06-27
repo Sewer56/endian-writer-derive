@@ -75,6 +75,8 @@ Fields are written to the output ***in the order they are declared in the source
 Consider the following struct
 
 ```rust
+use endian_writer_derive::EndianWritable;
+
 #[derive(EndianWritable)]
 struct WeirdOrder {
     c: u8,
