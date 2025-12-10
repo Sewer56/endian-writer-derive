@@ -29,6 +29,9 @@ impl EndianReadableAt for Inner {
 #[automatically_derived]
 impl ::core::marker::Copy for Inner {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for Inner {}
+#[automatically_derived]
 impl ::core::clone::Clone for Inner {
     #[inline]
     fn clone(&self) -> Inner {
