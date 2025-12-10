@@ -1,4 +1,4 @@
-#![doc = include_str!("../README.MD")]
+#![doc = include_str!(concat!("../", env!("CARGO_PKG_README")))]
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, Data, DeriveInput, Fields};

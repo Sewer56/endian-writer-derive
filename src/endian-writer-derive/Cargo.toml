@@ -4,9 +4,9 @@ version = "0.1.0"
 edition = "2021"
 description = "Procedural Macros for endian-writer crate."
 repository = "https://github.com/Sewer56/endian-writer-derive"
-license-file = "LICENSE"
+license = "MIT"
 include = ["src/**/*"]
-readme = "README.MD"
+readme = "../../README.MD"
 
 [lib]
 proc-macro = true
