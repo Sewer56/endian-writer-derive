@@ -24,4 +24,4 @@ endian-writer = "2.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dev-dependencies]
-macrotest = "1.0.13"
+macrotest = "1.2.0"
