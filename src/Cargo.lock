@@ -26,9 +26,9 @@ checksum = "56254986775e3233ffa9c4d7d3faaf6d36a2c09d30b20687e9f88bc8bafc16c8"
 
 [[package]]
 name = "endian-writer"
-version = "2.1.0"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14d28f28ea4170a0db85d994e7bf43468f90366d3ecbaff6e61f50f85318789c"
+checksum = "b5fba6714ed232b3a46d07255c9cb2d20e9a8aee06a20d5d2e3eb4e2b48d28ae"
 dependencies = [
  "concat-idents",
  "paste",
