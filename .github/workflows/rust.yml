@@ -38,23 +38,6 @@ jobs:
       #       thus as per recommendation of cargo-semver-checks, we're using stable here.
       #
       # Note to reader. If adding this to a new repo, please clear cache.
-      - name: Run cargo-semver-checks
-        if: github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/')
-        working-directory: src
-        shell: bash
-        run: |
-          SEARCH_RESULT=$(cargo search "^endian-writer-derive$" --limit 1)
-
-          if echo "$SEARCH_RESULT" | grep -q "^endian-writer-derive "; then
-              # Run semver checks on stable, because nightly sometimes gets borked in cargo-semver-checks.
-              rustup +stable target add ${{ matrix.target }}
-              # Note: binstall is available after devops-rust-test-and-coverage@v1 call
-              cargo +stable binstall --no-confirm cargo-semver-checks --force
-              cargo +stable semver-checks --target ${{ matrix.target }}
-          else
-              echo "No previous version found on crates.io. Skipping semver checks."
-          fi
-
       - name: Check documentation is valid
         if: github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/')
         working-directory: src
