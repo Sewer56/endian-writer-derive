@@ -16,7 +16,7 @@ default = ["std"]
 std = []
 
 [dependencies]
-syn = { version = "2.0.114", features = ["full", "extra-traits"] }
+syn = { version = "2.0.116", features = ["full", "extra-traits"] }
 quote = "1.0.44"
 proc-macro2 = "1.0.106"
 memoffset = "0.9.1"
@@ -24,4 +24,4 @@ endian-writer = "2.2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dev-dependencies]
-macrotest = "1.2.0"
+macrotest = "1.2.1"
