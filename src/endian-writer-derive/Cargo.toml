@@ -1,6 +1,6 @@
 [package]
 name = "endian-writer-derive"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Procedural Macros for endian-writer crate."
 repository = "https://github.com/Sewer56/endian-writer-derive"
