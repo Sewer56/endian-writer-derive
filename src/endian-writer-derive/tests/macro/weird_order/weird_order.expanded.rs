@@ -11,14 +11,11 @@ impl HasSize for WeirdOrder {
 }
 impl EndianWritableAt for WeirdOrder {
     unsafe fn write_at<W: EndianWriter>(&self, writer: &mut W, offset: isize) {
-        let c = self.c;
-        writer.write_at(&c, offset);
-        let b = self.b;
-        writer.write_at(&b, offset + 0 + <u8 as HasSize>::SIZE as isize);
-        let a = self.a;
+        writer.write_at(&self.c, offset);
+        writer.write_at(&self.b, offset + 0 + <u8 as HasSize>::SIZE as isize);
         writer
             .write_at(
-                &a,
+                &self.a,
                 offset + 0 + <u8 as HasSize>::SIZE as isize
                     + <u16 as HasSize>::SIZE as isize,
             );

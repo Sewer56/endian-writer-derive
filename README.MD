@@ -1,8 +1,8 @@
 # endian-writer-derive
 
-[![Crates.io](https://img.shields.io/crates/v/endian-writer-derive.svg)](https://crates.io/crates/endian-writer-derive)
-[![Docs.rs](https://docs.rs/endian-writer-derive/badge.svg)](https://docs.rs/endian-writer-derive)
-[![CI](https://github.com/Sewer56/endian-writer-derive/actions/workflows/rust.yml/badge.svg)](https://github.com/Sewer56/endian-writer-derive/actions)
+[![Crates.io]](https://crates.io/crates/endian-writer-derive)
+[![Docs.rs]](https://docs.rs/endian-writer-derive)
+[![CI]](https://github.com/Sewer56/endian-writer-derive/actions)
 
 ## About
 
@@ -57,13 +57,10 @@ impl HasSize for MyStruct {
 
 impl EndianWritableAt for MyStruct {
     unsafe fn write_at<W: EndianWriter>(&self, writer: &mut W, offset: isize) {
-        let a = self.a;
-        writer.write_at(&a, offset);
-        let b = self.b;
-        writer.write_at(&b, offset + <u32 as HasSize>::SIZE as isize);
-        let c = self.c;
+        writer.write_at(&self.a, offset);
+        writer.write_at(&self.b, offset + <u32 as HasSize>::SIZE as isize);
         writer.write_at(
-            &c,
+            &self.c,
             offset + <u32 as HasSize>::SIZE as isize + <u16 as HasSize>::SIZE as isize,
         );
     }
@@ -110,6 +107,21 @@ On the other hand, Rust may rearrange the fields as `u32`, `u16`, and lastly `u8
 In other words, the derive macro treats the code as if the struct is `#[repr(C, packed(1))]`.
 If padding is desired, the user must manually create it in the struct.
 
+### Generics
+
+Type parameters must `#[derive(EndianWritable)]` (implement `HasSize`,
+`EndianWritableAt`, and `EndianReadableAt`).
+
+```rust
+use endian_writer_derive::EndianWritable;
+
+#[derive(EndianWritable)]
+#[repr(C)]
+struct Wrapper<T> {
+    inner: T,
+}
+```
+
 ## Requirements
 
 - The macro can only be applied to structs with named fields.
@@ -118,17 +130,23 @@ If padding is desired, the user must manually create it in the struct.
 
 ## Developer Manual
 
-For step-by-step development guidance, see the [Developer Manual](https://reloaded-project.github.io/reloaded-templates-rust/manual/).
+For step-by-step development guidance, see the [Developer Manual].
 
 ## Contributing
 
-We welcome contributions! See the [Contributing Guide](https://reloaded-project.github.io/reloaded-templates-rust/manual/#contributing) for details.
+We welcome contributions! See the [Contributing Guide] for details.
 
 ## License
 
-Licensed under [MIT](./LICENSE).
+Licensed under [MIT].
 
 [endian-writer]: https://crates.io/crates/endian-writer
 [EndianWritableAt]: https://docs.rs/endian-writer/2.1.0/endian_writer/traits/trait.EndianWritableAt.html
 [EndianReadableAt]: https://docs.rs/endian-writer/2.1.0/endian_writer/traits/trait.EndianReadableAt.html
 [HasSize]: https://docs.rs/endian-writer/2.1.0/endian_writer/traits/trait.HasSize.html
+[Crates.io]: https://img.shields.io/crates/v/endian-writer-derive.svg
+[Docs.rs]: https://docs.rs/endian-writer-derive/badge.svg
+[CI]: https://github.com/Sewer56/endian-writer-derive/actions/workflows/rust.yml/badge.svg
+[Developer Manual]: https://reloaded-project.github.io/reloaded-templates-rust/manual/
+[Contributing Guide]: https://reloaded-project.github.io/reloaded-templates-rust/manual/#contributing
+[MIT]: ./LICENSE

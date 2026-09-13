@@ -10,10 +10,8 @@ impl HasSize for Inner {
 }
 impl EndianWritableAt for Inner {
     unsafe fn write_at<W: EndianWriter>(&self, writer: &mut W, offset: isize) {
-        let x = self.x;
-        writer.write_at(&x, offset);
-        let y = self.y;
-        writer.write_at(&y, offset + 0 + <u16 as HasSize>::SIZE as isize);
+        writer.write_at(&self.x, offset);
+        writer.write_at(&self.y, offset + 0 + <u16 as HasSize>::SIZE as isize);
     }
 }
 impl EndianReadableAt for Inner {
@@ -50,14 +48,11 @@ impl HasSize for Outer {
 }
 impl EndianWritableAt for Outer {
     unsafe fn write_at<W: EndianWriter>(&self, writer: &mut W, offset: isize) {
-        let a = self.a;
-        writer.write_at(&a, offset);
-        let b = self.b;
-        writer.write_at(&b, offset + 0 + <u8 as HasSize>::SIZE as isize);
-        let c = self.c;
+        writer.write_at(&self.a, offset);
+        writer.write_at(&self.b, offset + 0 + <u8 as HasSize>::SIZE as isize);
         writer
             .write_at(
-                &c,
+                &self.c,
                 offset + 0 + <u8 as HasSize>::SIZE as isize
                     + <Inner as HasSize>::SIZE as isize,
             );

@@ -12,14 +12,11 @@ impl HasSize for Simple {
 }
 impl EndianWritableAt for Simple {
     unsafe fn write_at<W: EndianWriter>(&self, writer: &mut W, offset: isize) {
-        let a = self.a;
-        writer.write_at(&a, offset);
-        let b = self.b;
-        writer.write_at(&b, offset + 0 + <u32 as HasSize>::SIZE as isize);
-        let c = self.c;
+        writer.write_at(&self.a, offset);
+        writer.write_at(&self.b, offset + 0 + <u32 as HasSize>::SIZE as isize);
         writer
             .write_at(
-                &c,
+                &self.c,
                 offset + 0 + <u32 as HasSize>::SIZE as isize
                     + <u16 as HasSize>::SIZE as isize,
             );
