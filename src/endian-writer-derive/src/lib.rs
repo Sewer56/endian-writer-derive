@@ -1,7 +1,7 @@
 #![doc = include_str!(concat!("../", env!("CARGO_PKG_README")))]
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, Data, DeriveInput, Fields};
+use syn::{parse_macro_input, parse_quote, Data, DeriveInput, Fields};
 
 /// Procedural macro to auto derive [`EndianWritableAt`] and [`EndianReadableAt`] traits for structs
 /// whose members implement [`HasSize`], [`EndianWritableAt`], and [`EndianReadableAt`].
@@ -11,6 +11,12 @@ use syn::{parse_macro_input, Data, DeriveInput, Fields};
 /// - The macro can only be applied to structs with named fields.
 /// - All fields within the struct must implement [`HasSize`], [`EndianWritableAt`], and [`EndianReadableAt`].
 /// - The struct should have a deterministic layout, typically enforced using `#[repr(C)]`.
+///
+/// # Generics
+///
+/// Type parameters must `#[derive(EndianWritable)]` (implement
+/// [`HasSize`], [`EndianWritableAt`], and
+/// [`EndianReadableAt`]).
 ///
 /// # Example
 ///
@@ -24,7 +30,18 @@ use syn::{parse_macro_input, Data, DeriveInput, Fields};
 ///     b: u16,
 ///     c: u8,
 /// }
+///
+/// #[derive(EndianWritable)]
+/// #[repr(C)]
+/// struct Wrapper<T> {
+///     inner: T,
+/// }
 /// ```
+///
+/// [`HasSize`]: endian_writer::HasSize
+/// [`HasSize`]: endian_writer::HasSize
+/// [`EndianWritableAt`]: endian_writer::EndianWritableAt
+/// [`EndianReadableAt`]: endian_writer::EndianReadableAt
 #[proc_macro_derive(EndianWritable)]
 pub fn derive_endian(input: TokenStream) -> TokenStream {
     derive_endian_impl(input)
@@ -36,6 +53,17 @@ pub(crate) fn derive_endian_impl(input: TokenStream) -> TokenStream {
 
     // Extract the struct name
     let name = input.ident;
+
+    // Bound every type parameter with the traits the generated impls need.
+    let mut generics = input.generics;
+    for type_param in generics.type_params_mut() {
+        type_param.bounds.push(parse_quote!(HasSize));
+        type_param.bounds.push(parse_quote!(EndianWritableAt));
+        type_param.bounds.push(parse_quote!(EndianReadableAt));
+    }
+
+    // Split into impl generics, type generics, and where clause.
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
     // Ensure the input is a struct with named fields
     let fields = match input.data {
@@ -89,7 +117,7 @@ pub(crate) fn derive_endian_impl(input: TokenStream) -> TokenStream {
         });
 
         quote! {
-            impl HasSize for #name {
+            impl #impl_generics HasSize for #name #ty_generics #where_clause {
                 const SIZE: usize = #sum_sizes;
             }
         }
@@ -108,9 +136,9 @@ pub(crate) fn derive_endian_impl(input: TokenStream) -> TokenStream {
                     quote! { offset + #sum_expr }
                 };
 
+                // Reference the field in place; moving it would require `Copy`.
                 let write_field = quote! {
-                    let #field = self.#field;
-                    writer.write_at(&#field, #current_offset);
+                    writer.write_at(&self.#field, #current_offset);
                 };
 
                 let new_sum_expr = quote! { #sum_expr + <#ty as HasSize>::SIZE as isize };
@@ -121,7 +149,7 @@ pub(crate) fn derive_endian_impl(input: TokenStream) -> TokenStream {
             });
 
         quote! {
-            impl EndianWritableAt for #name {
+            impl #impl_generics EndianWritableAt for #name #ty_generics #where_clause {
                 unsafe fn write_at<W: EndianWriter>(&self, writer: &mut W, offset: isize) {
                     #(
                         #write_fields
@@ -158,7 +186,7 @@ pub(crate) fn derive_endian_impl(input: TokenStream) -> TokenStream {
         let assign_fields = field_names.iter();
 
         quote! {
-            impl EndianReadableAt for #name {
+            impl #impl_generics EndianReadableAt for #name #ty_generics #where_clause {
                 unsafe fn read_at<R: EndianReader>(reader: &mut R, offset: isize) -> Self {
                     #(
                         #read_fields
