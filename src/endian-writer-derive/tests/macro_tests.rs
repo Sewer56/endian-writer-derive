@@ -27,3 +27,8 @@ fn test_generic_where() {
 fn test_generic_lifetime() {
     macrotest::expand("tests/macro/generic_lifetime/*.rs");
 }
+
+#[test]
+fn test_generic_const() {
+    macrotest::expand("tests/macro/generic_const/*.rs");
+}
